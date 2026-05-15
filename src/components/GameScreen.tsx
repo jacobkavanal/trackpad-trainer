@@ -37,6 +37,7 @@ export default function GameScreen({ difficulty, onComplete }: GameScreenProps) 
   const [score, setScore] = useState(0);
   const [timerProgress, setTimerProgress] = useState(1); // 1 = full, 0 = empty
   const [showMiss, setShowMiss] = useState(false);
+  const [missLabel, setMissLabel] = useState('MISS');
 
   // Refs to avoid stale closures
   const dotIndexRef = useRef(0);
@@ -96,6 +97,7 @@ export default function GameScreen({ difficulty, onComplete }: GameScreenProps) 
 
     clearAllTimers();
     missesRef.current += 1;
+    setMissLabel(Math.random() < 0.25 ? 'SQUISH' : 'MISS');
     setShowMiss(true);
     setTimerProgress(0);
 
@@ -148,7 +150,7 @@ export default function GameScreen({ difficulty, onComplete }: GameScreenProps) 
     const dy = clickY - dotPos.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
 
-    if (dist <= config.radius) {
+    if (dist <= config.radius + 6) {
       // Hit!
       isProcessingRef.current = true;
       clearAllTimers();
@@ -276,7 +278,7 @@ export default function GameScreen({ difficulty, onComplete }: GameScreenProps) 
             textTransform: 'uppercase',
             letterSpacing: '0.1em',
           }}>
-            MISS
+            {missLabel}
           </span>
         </div>
       )}
